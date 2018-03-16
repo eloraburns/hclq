@@ -2,10 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/hashicorp/hcl"
 	"io/ioutil"
 	"os"
-	"text/template"
 )
 
 func main() {
@@ -17,31 +15,18 @@ func main() {
 	hcl_filename := os.Args[1]
 	template_text := os.Args[2]
 
-	tmpl, err := template.New("hclq").Parse(template_text)
+	hcl_text, err := ioutil.ReadFile(hcl_filename)
 	if err != nil {
-		fmt.Printf("Template parse err: %s\n", err)
+		fmt.Printf("File read err: %s\n", err)
 		os.Exit(2)
 	}
 
-	hcl_file, err := ioutil.ReadFile(hcl_filename)
+	out, err := ParseAndFormat(hcl_text, template_text)
 	if err != nil {
-		fmt.Printf("File read err: %s\n", err)
+		fmt.Printf("Error parsing/formatting: %s\n", err)
 		os.Exit(3)
 	}
 
-	var out interface{}
-	err = hcl.Decode(&out, string(hcl_file))
-	if err != nil {
-		fmt.Printf("Input: %s\n\nError: %s\n", hcl_filename, err)
-		os.Exit(4)
-	}
-
-	err = tmpl.Execute(os.Stdout, out)
-	if err != nil {
-		fmt.Printf("Error executing template: %s\n", err)
-		os.Exit(5)
-	}
-	fmt.Printf("\n")
-
+	fmt.Printf("%s\n", out)
 	os.Exit(0)
 }
