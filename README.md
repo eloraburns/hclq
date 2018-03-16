@@ -21,3 +21,6 @@ Nested objects are wrapped in lists, because HCL:
 $ ./hclq some.hcl '{{ (index .bar 0).quux }}'
 zounds
 ```
+
+## Build
+`make`

@@ -14,3 +14,4 @@
 .glide/
 .*.sw?
 hclq
+bin/
